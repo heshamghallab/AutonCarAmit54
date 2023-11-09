@@ -35,7 +35,8 @@ void DCMOTOR_vidInit(void)
 }
 void DCMOTOR_vidMoveForward(void)
 {
-	
+		TIMER0_vidFastPWMInverted(20);
+
 	
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN3,DIO_HIGH);
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN4,DIO_HIGH);
@@ -53,6 +54,8 @@ void DCMOTOR_vidMoveForward(void)
 
 void DCMOTOR_vidMoveBackward(void)
 {
+		TIMER0_vidFastPWMInverted(20);
+
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN3,DIO_HIGH);
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN4,DIO_HIGH);
 	
@@ -67,6 +70,8 @@ void DCMOTOR_vidMoveBackward(void)
 
 void DCMOTOR_vidStopMotor (void)
 {
+		TIMER0_vidFastPWMInverted(0);
+
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN3,DIO_LOW);
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN4,DIO_LOW);
 
@@ -105,6 +110,11 @@ void SERVO_vidLookLeft(void)
 
 void DCMOTOR_vidTurnRight(void)
 {
+		TIMER0_vidFastPWMInverted(20);
+
+	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN3,DIO_HIGH);
+	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN4,DIO_HIGH);
+	
 	DIO_udtSetPinValue(DIO_PORTC,DIO_PIN3,DIO_HIGH);  // H_IN1
 	DIO_udtSetPinValue(DIO_PORTC,DIO_PIN5,DIO_LOW);  // H_IN3
 	DIO_udtSetPinValue(DIO_PORTC,DIO_PIN4,DIO_LOW);  // H_IN2
@@ -117,6 +127,12 @@ void DCMOTOR_vidTurnRight(void)
 }
 void DCMOTOR_vidTurnLeft(void)
 {
+	
+		TIMER0_vidFastPWMInverted(20);
+
+	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN3,DIO_HIGH);
+	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN4,DIO_HIGH);
+	
 	DIO_udtSetPinValue(DIO_PORTC,DIO_PIN3,DIO_LOW);  // H_IN1
 	DIO_udtSetPinValue(DIO_PORTC,DIO_PIN5,DIO_HIGH);  // H_IN3
 	DIO_udtSetPinValue(DIO_PORTC,DIO_PIN4,DIO_HIGH);  // H_IN2
