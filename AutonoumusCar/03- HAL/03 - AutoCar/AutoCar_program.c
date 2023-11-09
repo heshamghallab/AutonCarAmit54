@@ -13,12 +13,7 @@
 #include "AutoCar_private.h"
 
 
-#define F_CPU 16000000UL
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
-#include <string.h>
-#include <stdlib.h>
+
 
 
 
@@ -35,9 +30,8 @@ void DCMOTOR_vidInit(void)
 }
 void DCMOTOR_vidMoveForward(void)
 {
-		TIMER0_vidFastPWMInverted(20);
+	//TIMER0_vidFastPWMInverted(20);
 
-	
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN3,DIO_HIGH);
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN4,DIO_HIGH);
 	
@@ -54,7 +48,7 @@ void DCMOTOR_vidMoveForward(void)
 
 void DCMOTOR_vidMoveBackward(void)
 {
-		TIMER0_vidFastPWMInverted(20);
+	//TIMER0_vidFastPWMInverted(20);
 
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN3,DIO_HIGH);
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN4,DIO_HIGH);
@@ -70,7 +64,7 @@ void DCMOTOR_vidMoveBackward(void)
 
 void DCMOTOR_vidStopMotor (void)
 {
-		TIMER0_vidFastPWMInverted(0);
+	//TIMER0_vidFastPWMInverted(0);
 
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN3,DIO_LOW);
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN4,DIO_LOW);
@@ -88,7 +82,7 @@ void DCMOTOR_vidStopMotor (void)
 void SERVO_vidInit(void)
 {
 	DIO_udtSetPinDirection(DIO_PORTD,DIO_PIN5,DIO_OUTPUT);
-	//DIO_udtSetPinDirection(DIO_PORTC,DIO_PIN0,DIO_OUTPUT);
+	
 }
 void SERVO_vidLookForward(void)
 {
@@ -110,7 +104,7 @@ void SERVO_vidLookLeft(void)
 
 void DCMOTOR_vidTurnRight(void)
 {
-		TIMER0_vidFastPWMInverted(20);
+	//TIMER0_vidFastPWMInverted(20);
 
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN3,DIO_HIGH);
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN4,DIO_HIGH);
@@ -128,7 +122,7 @@ void DCMOTOR_vidTurnRight(void)
 void DCMOTOR_vidTurnLeft(void)
 {
 	
-		TIMER0_vidFastPWMInverted(20);
+	//TIMER0_vidFastPWMInverted(20);
 
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN3,DIO_HIGH);
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN4,DIO_HIGH);
