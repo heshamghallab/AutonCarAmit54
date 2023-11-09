@@ -19,12 +19,9 @@
 #include "AutoCar_interface.h"
 #include "AutoCar_private.h"
 
-#define F_CPU 16000000UL
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
-#include <string.h>
-#include <stdlib.h>
+#include "GIE_interface.h"
+#include "GIE_private.h"
+#include "GIE_config.h"
 
 
 
@@ -59,9 +56,10 @@ int main(void)
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN6,DIO_HIGH);
 
 	
-	sei();			
-	TIMSK = (1 << TOIE1);	
-	TCCR1A = 0;
+		
+	GIE_vidEnableGlobalInterrupt();
+	SET_BIT(TIMSK1,2);  // enable Timer1 interrupt
+	
 	DIO_udtSetPinDirection(DIO_PORTC,DIO_PIN7,DIO_OUTPUT);		
 	DIO_udtSetPinValue(DIO_PORTC,DIO_PIN7,DIO_HIGH);
 	
@@ -78,14 +76,14 @@ int main(void)
 				TIMER0_vidSyncMilliSecondsDelay(20);
 				LCD_vidPrintWord("LOOKING FORWARD");
 				readultra(&distance);
-				TIMER0_vidSyncMilliSecondsDelay(100);
+				TIMER0_vidSyncMilliSecondsDelay(50);
 				LCD_vidGoTo(2,0);
 				floatToString(distance,string,sizeof(string),2);
 				LCD_vidPrintWord(string);
 				LCD_vidPrintWord(" CM");
 				
 				
-		if( (int)distance < 20)
+		if( (int)distance < 35)
 				{
 					changepath();
 				}
@@ -99,7 +97,7 @@ int main(void)
 					floatToString(distance,string,sizeof(string),2);
 					LCD_vidPrintWord(string);
 					LCD_vidPrintWord(" CM");
-					TIMER0_vidSyncSecondsDelay(1);
+					TIMER0_vidSyncMilliSecondsDelay(20);
 				}
 				
 	
@@ -146,7 +144,7 @@ void changepath(void)
 	SERVO_vidLookForward();
 	TIMER0_vidSyncMilliSecondsDelay(500);
 	
-	if((Rdis < 20) && (Ldis < 20) )
+	if((Rdis < 35) && (Ldis < 35) )
 	{
 		LCD_udtSendCommand(0x01);
 		TIMER0_vidSyncMilliSecondsDelay(20);
@@ -183,31 +181,32 @@ void readultra (double *dis)
 	long count;
 	double distance;
 	
-	
+	//
 	CLR_BIT(TCCR1B,4);
 	CLR_BIT(TCCR1B,3);
 	CLR_BIT(TCCR1A,1);
-	
+	//
 	
 	DIO_udtSetPinValue(DIO_PORTC,DIO_PIN1,DIO_HIGH);
-	_delay_us(10);
+	TIMER0_vidSyncMicroecondsDelay(20);
 	DIO_udtSetPinValue(DIO_PORTC,DIO_PIN1,DIO_LOW);
 	
 	TCNT1 = 0;	
-	TCCR1B = 0x41;	
-	TIFR = 1<<ICF1;	
-	TIFR = 1<<TOV1;	
-
+	TCCR1B = 0x41;  //  ICU RISING EDGE
+		0100 0001;
+	SET_BIT(TIFR1,5);
+	SET_BIT(TIFR1,2);
 	
+	while ( GET_BIT(TIFR1,5) == 0);
 	
-	while ((TIFR & (1 << ICF1)) == 0);
 	TCNT1 = 0;	
-	TCCR1B = 0x01;	
-	TIFR = 1<<ICF1;	
-	TIFR = 1<<TOV1;	
+	TCCR1B = 0x01;	 //  ICU FALLING EDGE
+	SET_BIT(TIFR1,5);
+	SET_BIT(TIFR1,2);
 	TimerOverflow = 0;
 
-	while ((TIFR & (1 << ICF1)) == 0);
+	while ( GET_BIT(TIFR1,5) == 0);
+	
 	count = TCNT1 + (65535 * TimerOverflow);	
 	
 	distance = (double)count / 466.47;
