@@ -32,7 +32,7 @@
 
 
 
-int TimerOverflow = 0;
+static volatile int TimerOverflow = 0;
 
 ISR(TIMER1_OVF_vect)
 {
@@ -57,6 +57,7 @@ int main(void)
 	
 	DIO_udtSetPinDirection(DIO_PORTC,DIO_PIN1,DIO_OUTPUT);		
 	DIO_udtSetPinValue(DIO_PORTD,DIO_PIN6,DIO_HIGH);
+
 	
 	sei();			
 	TIMSK = (1 << TOIE1);	
@@ -64,12 +65,15 @@ int main(void)
 	DIO_udtSetPinDirection(DIO_PORTC,DIO_PIN7,DIO_OUTPUT);		
 	DIO_udtSetPinValue(DIO_PORTC,DIO_PIN7,DIO_HIGH);
 	
+	DIO_udtSetPinDirection(DIO_PORTB,DIO_PIN3,DIO_OUTPUT);
+
+	
 	SERVO_vidLookForward();
 	TIMER0_vidSyncSecondsDelay(1);
 	
-	
 	while(1)
 	{
+		
 				LCD_udtSendCommand(0x01);
 				TIMER0_vidSyncMilliSecondsDelay(20);
 				LCD_vidPrintWord("LOOKING FORWARD");
